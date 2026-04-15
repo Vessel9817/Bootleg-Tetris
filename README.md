@@ -41,8 +41,6 @@ py -m bootleg_tetris
 
 ## Features
 
-### Implemented
-
 - SRS rotation
 - Block holding
 - Local 2 player
@@ -50,24 +48,3 @@ py -m bootleg_tetris
 - Sending garbage lines
 - Point system
 - Level system
-
-### Not implemented
-
-- Title screen
-- A visualization of how many lines are about to be received
-- Highscores
-- Sound effects
-- Holding down move keys
-- Control customization
-- Extra modes
-  - Singleplayer modes
-  - Multiplayer race modes
-  - Cooperative multiplayer?
-- Game continuation after another player game-overs
-- Sending extra lines from T-spins
-- Sending extra lines from compounded single line clears
-
-### Not planned
-
-- Online play
-- 3+ player support
