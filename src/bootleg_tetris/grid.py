@@ -35,7 +35,7 @@ class Grid:
         - timer_running : The boolean indicator of wether the timer is running
         - timer : The countdown timer for the block locking mechanism
         - drop_counter : A counter used to slow down the block's automatic drop rate
-        - flag : An indicator for whether a method has been called atleast once or not
+        - flag : An indicator for whether a method has been called at least once or not
         - lose : The boolean value signifying the defeat of the player in control of this grid
         - win : A boolean indicator of whether the player has won or not
         - __is_held : The boolean value used to disable block holding more than once before a block locks into place
@@ -76,13 +76,13 @@ class Grid:
             - height : The drawn grid's height in pixels
             - surface : The surface to draw the grid on
         '''
-        self.__x = x
-        self.__y = y
+        self.__surface = surface
         self.__width = height // 2
         self.__height = height
         self.__cell_length = height // Grid.ROWS
-        self.__surface = surface
         self.__grid_index = len(Grid.GRIDS)
+        self.x = x
+        self.y = y
 
         Grid.GRIDS.append(self)
 
@@ -107,7 +107,7 @@ class Grid:
         self.drop_counter = 0
 
         # Resetting win/loss flags
-        self.flag = False
+        self.next_block_flag = False
         self.lose = False
         self.win = False
 
@@ -127,8 +127,8 @@ class Grid:
         self.__grid = [
             [
                 pygame.Rect(
-                    self.__x + j * self.__cell_length,
-                    self.__y + i * self.__cell_length,
+                    self.x + j * self.__cell_length,
+                    self.y + i * self.__cell_length,
                     self.__cell_length,
                     self.__cell_length
                 )
@@ -154,35 +154,35 @@ class Grid:
 
     def draw_hold(self) -> None:
         '''Draws text displaying the player's currently held block'''
-        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y, 100, 100))
+        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.x - 100, self.y, 100, 100))
         font = pygame.font.SysFont(None, 20)
         hold_text = font.render(f'Holding {self.hold.get_block_type()}-block' if self.hold.get_block_type() != '?' else 'Holding nothing', False, Block.WHITE)
-        self.__surface.blit(hold_text, (self.__x - 100, self.__y))
+        self.__surface.blit(hold_text, (self.x - 100, self.y))
 
     def draw_level(self) -> None:
         '''Draws text displaying the current level'''
-        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height // 1.5, 100, 30))
+        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.x - 100, self.y + self.height // 1.5, 100, 30))
         font = pygame.font.SysFont(None, 20)
         level_text = font.render(f'level {Grid.LEVEL + 1}', False, Block.WHITE)
-        self.__surface.blit(level_text, (self.__x - 100, self.__y + self.__height // 1.5))
+        self.__surface.blit(level_text, (self.x - 100, self.y + self.height // 1.5))
 
     def draw_lines_cleared(self) -> None:
         '''Draws text displaying the player's current quantity of cleared lines'''
-        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height - 40, 100, 30))
+        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.x - 100, self.y + self.height - 40, 100, 30))
         font = pygame.font.SysFont(None, 20)
         lines_text = font.render('Lines:', False, Block.WHITE)
         lines_value = font.render(str(self.__lines_cleared), False, Block.WHITE)
-        self.__surface.blit(lines_text, (self.__x - 100, self.__y + self.__height - 40))
-        self.__surface.blit(lines_value, (self.__x - 100, self.__y + self.__height - 20))
+        self.__surface.blit(lines_text, (self.x - 100, self.y + self.height - 40))
+        self.__surface.blit(lines_value, (self.x - 100, self.y + self.height - 20))
 
     def draw_score(self) -> None:
         '''Draws text displaying the player's current score'''
-        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height // 1.25, 100, 30))
+        pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.x - 100, self.y + self.height // 1.25, 100, 30))
         font = pygame.font.SysFont(None, 20)
         score_text = font.render('Score:', False, Block.WHITE)
         score_value = font.render(str(self.score), False, Block.WHITE)
-        self.__surface.blit(score_text, (self.__x - 100, self.__y + self.__height // 1.25))
-        self.__surface.blit(score_value, (self.__x - 100, self.__y + self.__height // 1.25 + 20))
+        self.__surface.blit(score_text, (self.x - 100, self.y + self.height // 1.25))
+        self.__surface.blit(score_value, (self.x - 100, self.y + self.height // 1.25 + 20))
 
     def swap_hold(self) -> None:
         '''Swaps the current block with the currently held block; a process called holding. Can only occur once before this player locks a block'''
@@ -191,7 +191,7 @@ class Grid:
             self.block.erase_block()
 
             if self.hold.get_block_type() == '?':
-                self.flag = False
+                self.next_block_flag = False
                 self.hold.reset_block(self.block.get_block_type())
                 self.__get_next_block()
             else:
@@ -201,45 +201,41 @@ class Grid:
 
             self.draw_hold()
 
-    def get_x(self) -> int:
-        '''Returns the grid's x cooridnate '''
+    @property
+    def x(self) -> int:
+        '''The grid's x cooridnate '''
         return self.__x
 
-    def set_x(self, x) -> None:
+    @x.setter
+    def x(self, x: int) -> None:
         '''Sets the grid's x coordinate to *x* if x is within the bounds of the surface'''
-        if 0 <= x <= self.__surface.get_width() - self.__width:
+        if 0 <= x <= self.__surface.get_width() - self.width:
             self.__x = x
+        else:
+            raise ValueError(f'X coordinate out of bounds: {x}')
 
-    def get_y(self) -> int:
-        '''Returns the grid's y coordinate'''
+    @property
+    def y(self) -> int:
+        '''The grid's y coordinate'''
         return self.__y
 
-    def set_y(self, y) -> None:
+    @y.setter
+    def y(self, y: int) -> None:
         '''Sets the grid's y coordiante to *y* if y is within the bounds of the surface'''
-        if 0 <= y <= self.__surface.get_height() - self.__height:
+        if 0 <= y <= self.__surface.get_height() - self.height:
             self.__y = y
+        else:
+            raise ValueError(f'Y coordinate out of bounds: {y}')
 
-    def get_width(self) -> int:
-        '''Returns the grid's width in pixels'''
+    @property
+    def width(self) -> int:
+        '''The grid's width in pixels'''
         return self.__width
 
-    def set_width(self, width) -> None:
-        '''Sets the grid's width to *width* if it is within the bounds of the surface'''
-        if 0 <= width <= self.__surface.get_width():
-            self.__width = width
-            self.__height = width * 2
-            self.__cell_length = width // Grid.COLS
-
-    def get_height(self) -> int:
-        '''Returnes the grid's height in pixels'''
+    @property
+    def height(self) -> int:
+        '''The grid's height in pixels'''
         return self.__height
-
-    def set_height(self, height) -> None:
-        '''Sets the grid's height to *height* if it is within the bounds of the surface'''
-        if 0 <= height <= self.__surface.get_height():
-            self.__height = height
-            self.__width = height // 2
-            self.__cell_length = height // Grid.ROWS
 
     def draw_grid(self) -> None:
         '''If the the player has not won or lost, it draws the matrice of rectangles called __grid and draws the grid lines. If the player has lost, draws a big red rectangle with a label on it saying "You Lose". If the player has won, draws a big green rectangle with a label on it saying "You Win". '''
@@ -250,22 +246,22 @@ class Grid:
                     pygame.draw.rect(self.__surface, self.__grid_colours[row][col], self.__grid[row][col])
 
             for row in range(len(self.__grid) + 1):
-                pygame.draw.rect(self.__surface, Block.WHITE, pygame.Rect(self.__x, self.__y + row * self.__cell_length, self.__width, 1))
+                pygame.draw.rect(self.__surface, Block.WHITE, pygame.Rect(self.x, self.y + row * self.__cell_length, self.width, 1))
 
             for col in range(len(self.__grid[0]) + 1):
-                pygame.draw.rect(self.__surface, Block.WHITE, pygame.Rect(int(self.__x + col * self.__cell_length), self.__y, 1, self.__height))
+                pygame.draw.rect(self.__surface, Block.WHITE, pygame.Rect(int(self.x + col * self.__cell_length), self.y, 1, self.height))
         elif self.lose:
             # Checking if this player lost
-            pygame.draw.rect(self.__surface, Block.RED, pygame.Rect(self.__x, self.__y, self.__width, self.__height))
+            pygame.draw.rect(self.__surface, Block.RED, pygame.Rect(self.x, self.y, self.width, self.height))
             font = pygame.font.SysFont(None, 65)
             loss_text = font.render('You Lose', True, Block.WHITE)
-            self.__surface.blit(loss_text, (self.__x , self.__y + self.__height // 2))
+            self.__surface.blit(loss_text, (self.x , self.y + self.height // 2))
         elif self.win:
             # Checking if this player won
-            pygame.draw.rect(self.__surface, Block.GREEN, pygame.Rect(self.__x, self.__y, self.__width, self.__height))
+            pygame.draw.rect(self.__surface, Block.GREEN, pygame.Rect(self.x, self.y, self.width, self.height))
             font = pygame.font.SysFont(None, 65)
             win_text = font.render('You Win', True, Block.WHITE)
-            self.__surface.blit(win_text, (self.__x , self.__y + self.__height // 2))
+            self.__surface.blit(win_text, (self.x , self.y + self.height // 2))
 
         # Updating window
         pygame.display.update()
@@ -416,10 +412,10 @@ class Grid:
 
     def __get_next_block(self) -> None:
         '''Replaces the current block with next block in NEXT_BLOCKS static list. If there are no blocks ahead in queue generates no blocks using the generateBlock method. Increases the block index attribute by 1.'''
-        if self.flag:
+        if self.next_block_flag:
             self.draw_block()
 
-        self.flag = True
+        self.next_block_flag = True
 
         # Generating new block if necessary
         if self.__block_index == len(Grid.NEXT_BLOCKS):
@@ -456,4 +452,4 @@ class Grid:
 
     def __repr__(self) -> str:
         '''repr override'''
-        return f'Grid({self.__x}, {self.__y}, {self.__height}, {repr(self.__surface)})'
+        return f'Grid({self.x}, {self.y}, {self.height}, {repr(self.__surface)})'
