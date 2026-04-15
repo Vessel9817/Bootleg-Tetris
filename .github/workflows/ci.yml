@@ -37,4 +37,4 @@ jobs:
       - name: Install dependencies
         run: pip install --group publish --group typing .
       - name: Run mypy
-        run: py -m mypy './src/'
+        run: python3 -m mypy './src/'
