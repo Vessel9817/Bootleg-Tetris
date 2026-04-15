@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-# Andy Luo and Matthew Simpson
-# Bootleg Tetris
-# To create a multiplayer Tetris experience
+#!/usr/bin/python3
 
-# import necessary modules
-import pygame
-from Block import Block
 from random import randint
+
+import pygame
+
+from .block import Block
+
 
 class Grid:
     """ A coloured grid of square cells in which player interactions with the game are possible.

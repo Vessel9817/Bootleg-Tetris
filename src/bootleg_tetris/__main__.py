@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# Andy Luo and Matthew Simpson
-# Bootleg Tetris
-# Creates a multiplayer Tetris experience
+#!/usr/bin/python3
 
 # Player 1 controls
 # W     : rotate CW
@@ -25,11 +22,12 @@
 
 # Hiding pygame support message
 import os
+
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 
-# import necessary modules
 import pygame
-from Tetris import startGame
+
+from .game import startGame
 
 if __name__ == '__main__':
     '''Runs the game of Tetris as well as initializing Pygame and the game display'''

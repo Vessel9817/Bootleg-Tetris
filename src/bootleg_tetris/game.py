@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-# Andy Luo and Matthew Simpson
-# Bootleg Tetris
-# Creates a multiplayer Tetris experience
+#!/usr/bin/python3
 
 # import necessary modules
 import pygame
-from Grid import Grid
-from Block import Block
+
+from .block import Block
+from .grid import Grid
+
 
 def startGame(display):
     '''Is responsible for: parsing key inputs and redirecting them to controls within the game; for drawing and refreshing the display and grid; for checking whether a player has lost or not and prompting the respective message for such an event and; for the countdown timers of auto dropping and automatically locking the blocks to their respective grids'''

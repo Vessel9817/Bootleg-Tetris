@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# Andy Luo and Matthew Simpson
-# Bootleg Tetris
-# To create a multiplayer Tetris experience
+#!/usr/bin/python3
 
 class Block:
     ''' A collection of cells on a grid in the form of various tetrominoes in which the player can manipulate and control

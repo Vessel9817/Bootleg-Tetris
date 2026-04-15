@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools >= 82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "bootleg_tetris"
+version = "0.0.0"
+readme = "README.md"
+# Pygame isn't compatible with Python 3.14 yet, see:
+# https://github.com/pygame/pygame/issues/4753
+requires-python = ">=3.13,<3.14"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICEN[CS]E*", "*.license"]
+dependencies = ["pygame >= 2.6.1"]
+
+[project.urls]
+Homepage = "https://github.com/Anonymous-Humanoid/Bootleg-Tetris"
+Issues = "https://github.com/Anonymous-Humanoid/Bootleg-Tetris/issues"
