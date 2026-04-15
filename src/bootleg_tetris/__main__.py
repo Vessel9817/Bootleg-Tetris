@@ -31,7 +31,7 @@ from .game import startGame
 
 if __name__ == '__main__':
     '''Runs the game of Tetris as well as initializing Pygame and the game display'''
-    
+
     # Starting up PyGame
     pygame.init()
     pygame.font.init()

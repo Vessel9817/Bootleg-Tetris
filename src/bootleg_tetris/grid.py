@@ -19,7 +19,7 @@ class Grid:
         - LEVEL : The game's current level
         - SPEED : The game's current soft drop rate
         - __SCORE : The scoring increment values based on the quantity of lines immediately cleared
-        
+
     Attributes:
         - __x : The x-coordinate of grid in the surface
         - __y : The y-coordinate of grid in the surface
@@ -47,15 +47,11 @@ class Grid:
 
     COLS = 10
     ROWS = 20
-    
     GRIDS = []
-
     BLOCKS = ['i', 'j', 'l', 's', 'z', 't', 'o']
     NEXT_BLOCKS = []
-
     LEVEL = 0
     SPEED = 35
-
     __SCORE = {
         0 : 0, # 0 score, just in case
         1 : 40,
@@ -73,7 +69,6 @@ class Grid:
             - height : The drawn grid's height in pixels
             - surface : The surface to draw the grid on
         '''
-
         self.__x = x
         self.__y = y
         self.__width = height // 2
@@ -83,17 +78,16 @@ class Grid:
         self.__grid_index = len(Grid.GRIDS)
 
         Grid.GRIDS.append(self)
-        
+
         # Temporary initialization
         self.block = Block('?', self)
         self.hold = Block('?', self)
         self.__block_index = 0
 
         self.resetGrid()
-    
+
     def resetGrid(self):
         '''Resets the Grid attributes, excluding unchanged attributes, such as __surface'''
-
         # Temporarily reinitializing block 
         self.block.resetBlock('?')
         self.hold.resetBlock('?')
@@ -103,7 +97,7 @@ class Grid:
         self.timer_running = False
         self.timer = 0
         self.drop_counter = 0
-        
+
         # Resetting win/loss flags
         self.flag = False
         self.lose = False
@@ -132,53 +126,49 @@ class Grid:
                 )
                 for j in range(10)
             ]
-        for i in range(20)
+            for i in range(20)
         ]
 
         Grid.LEVEL = 0
         Grid.SPEED = 35
-        
+
         # Resetting drawn statistics
         self.drawLevel()
         self.drawHold()
         self.drawScore()
         self.drawLinesCleared()
-        
+
         # Generating new block if there are none
         if len(Grid.NEXT_BLOCKS) > len(Grid.GRIDS):
             Grid.NEXT_BLOCKS = [Grid.BLOCKS[randint(0, len(Grid.BLOCKS) - 1)]]
-        
+
         self.__getNextBlock()
 
     def drawHold(self):
         '''Draws text displaying the player's currently held block'''
-        
         pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y, 100, 100))
         font = pygame.font.SysFont(None, 20)
         hold_text = font.render(f'Holding {self.hold.getBlockType()}-block' if self.hold.getBlockType() != '?' else f'Holding nothing', False, Block.WHITE)
         self.__surface.blit(hold_text, (self.__x - 100, self.__y))
-    
+
     def drawLevel(self):
         '''Draws text displaying the current level'''
-
         pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height // 1.5, 100, 30))
         font = pygame.font.SysFont(None, 20)
         level_text = font.render(f'level {Grid.LEVEL + 1}', False, Block.WHITE)
         self.__surface.blit(level_text, (self.__x - 100, self.__y + self.__height // 1.5))
-    
+
     def drawLinesCleared(self):
         '''Draws text displaying the player's current quantity of cleared lines'''
-
         pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height - 40, 100, 30))
         font = pygame.font.SysFont(None, 20)
         lines_text = font.render('Lines:', False, Block.WHITE)
         lines_value = font.render(str(self.__lines_cleared), False, Block.WHITE)
         self.__surface.blit(lines_text, (self.__x - 100, self.__y + self.__height - 40))
         self.__surface.blit(lines_value, (self.__x - 100, self.__y + self.__height - 20))
-    
+
     def drawScore(self):
         '''Draws text displaying the player's current score'''
-
         pygame.draw.rect(self.__surface, Block.BLACK, pygame.Rect(self.__x - 100, self.__y + self.__height // 1.25, 100, 30))
         font = pygame.font.SysFont(None, 20)
         score_text = font.render('Score:', False, Block.WHITE)
@@ -188,7 +178,6 @@ class Grid:
 
     def swapHold(self):
         '''Swaps the current block with the currently held block; a process called holding. Can only occur once before this player locks a block'''
-
         if not self.__is_held:
             self.__is_held = True
 
@@ -202,33 +191,30 @@ class Grid:
                 self.__getNextBlock()
             else:
                 temp = self.hold.getBlockType()
-                
+
                 self.hold.resetBlock(self.block.getBlockType())
                 self.block.resetBlock(temp)
-            
+
             self.drawHold()
-    
+
     def getX(self):
         '''Returns the grid's x cooridnate '''
-
         return self.__x
 
     def setX(self, x):
         '''Sets the grid's x coordinate to *x* if x is within the bounds of the surface'''
-
         if 0 <= x <= self.__surface.get_width() - self.__width:
             self.__x = x
-    
+
     def getY(self):
         '''Returns the grid's y coordinate'''
-
         return self.__y
 
     def setY(self, y):
         '''Sets the grid's y coordiante to *y* if y is within the bounds of the surface'''
         if 0 <= y <= self.__surface.get_height() - self.__height:
             self.__y = y
-    
+
     def getWidth(self):
         '''Returns the grid's width in pixels'''
         return self.__width
@@ -239,7 +225,7 @@ class Grid:
             self.__width = width
             self.__height = width * 2
             self.__cellLength = width // Grid.COLS
-    
+
     def getHeight(self):
         '''Returnes the grid's height in pixels'''
         return self.__height
@@ -253,7 +239,6 @@ class Grid:
 
     def drawGrid(self):
         '''If the the player has not won or lost, it draws the matrice of rectangles called __grid and draws the grid lines. If the player has lost, draws a big red rectangle with a label on it saying "You Lose". If the player has won, draws a big green rectangle with a label on it saying "You Win". '''
-        
         # Checking if the game is still in progress
         if not self.lose and not self.win:
             for row in range(len(self.__grid)):
@@ -265,31 +250,31 @@ class Grid:
 
             for col in range(len(self.__grid[0]) + 1):
                 pygame.draw.rect(self.__surface, Block.WHITE, pygame.Rect(int(self.__x + col * self.__cellLength), self.__y, 1, self.__height))
-        
+
         # Checking if this player lost
         elif self.lose:
             pygame.draw.rect(self.__surface, Block.RED, pygame.Rect(self.__x, self.__y, self.__width, self.__height))
             font = pygame.font.SysFont(None, 65)
             loss_text = font.render('You Lose', True, Block.WHITE)
             self.__surface.blit(loss_text, (self.__x , self.__y + self.__height // 2))
-        
+
         # Checking if this player won
         elif self.win:
             pygame.draw.rect(self.__surface, Block.GREEN, pygame.Rect(self.__x, self.__y, self.__width, self.__height))
             font = pygame.font.SysFont(None, 65)
             win_text = font.render('You Win', True, Block.WHITE)
             self.__surface.blit(win_text, (self.__x , self.__y + self.__height // 2))
-        
+
         # Updating window
         pygame.display.update()
 
     def getCell(self, row, col):
         '''Returns the grid's indexed cell and colour
-        
+
         Parameters:
             - row : The row index of the cell
             - col : The column index of the cell
-        
+
         Returns:
             tuple : The grid's indexed cell followed by its colour
         '''
@@ -297,26 +282,22 @@ class Grid:
 
     def setCell(self, row, col, colour):
         '''Sets the grid's indexed cell colour to *colour*
-        
+
         Parameters:
             - row : The row index of the cell
             - col : The column index of the cell
             - colour : The colour the cell is to be coloured
         '''
-
         self.__grid_colours[row][col] = colour
 
     def drawBlock(self):
         '''Draws the current block on the grid'''
-
         for coords in self.block.getCoords():
             self.setCell(coords[0], coords[1], self.block.colour)
-    
+
     def lock(self):
         '''Manages a timer for when the current block should be either moveable or unmoveable when on the ground. Generates a new block if this block is locked (i.e., made unmovable)'''
-
         if self.timer >= Grid.SPEED * 3 and not self.block.collisionDetect(r_off=-1):
-            
             # Clearing lines and generating block
             self.__getNextBlock()
             self.__clearLines()
@@ -325,14 +306,12 @@ class Grid:
             self.timer_running = False
             self.__is_held = False
             self.timer = 0
-
         else:
             # Starting lock timer
             self.timer_running = True
-    
+
     def instantLock(self):
         '''Instantly locks the current block to the grid, clears and sends any complete lines. Generates a new block if this block is locked (i.e., made unmovable)'''
-
         self.__getNextBlock()
         self.__clearLines()
 
@@ -340,26 +319,26 @@ class Grid:
         self.timer_running = False
         self.__is_held = False
         self.timer = 0
-    
+
     def __receiveLines(self):
         '''Detects and collects which rows in the grid will be moved and moves them up by the number of line sent. The empty space will be replaced by gray blocks which represent garbage lines. There will be a randomly selected column in which there will be no garbage lines to represent messiness. If the number of rows moved + the number of lines received exeeds or equals the number of rows on the grid, the player loses.'''
         top_row = None
 
         for i in range(Grid.ROWS):
             moveable = False
-            
+
             for cell in self.__grid_colours[i]:
                 if cell != Block.BLACK:
                     moveable = True
                     break
-            
+
             if moveable:
                 top_row = i
                 break
-        
+
         if top_row is not None:
             random_col = randint(0, Grid.COLS - 1)
-            
+
             if self.lines_received > top_row:
                 self.lose = True
             else:
@@ -367,7 +346,7 @@ class Grid:
                 for row in range(top_row, Grid.ROWS):
                     for col in range(Grid.COLS):
                         self.setCell(row - self.lines_received, col, self.__grid_colours[row][col])
-                
+
                 # Filling in garbage rows
                 for row in range(Grid.ROWS - self.lines_received, Grid.ROWS):
                     for col in range(Grid.COLS):
@@ -376,7 +355,7 @@ class Grid:
     def __clearLines(self):
         '''Finds and stores the rows which can be cleared and clears them while moving the rows above them down by the number of rows cleared. If rows were cleared, the __lines_cleared, score, LEVEL, and SPEED increase and visually update accordingly. Finally, reduces the lines received by the number of lines cleared. If the lines received attribute becomes negative, it sends lines back to the other grid using the GRIDS static list. If the lines received are still positive, it calls the receiveLines method to receive the lines and resets the lines received attribute'''
         cleared_rows = []
-        
+
         for i in range(Grid.ROWS):
             clearable = True
 
@@ -384,19 +363,18 @@ class Grid:
             for cell in self.__grid_colours[i]:
                 if cell == Block.BLACK:
                     clearable = False
-            
+
             if clearable:
                 cleared_rows.append(i)
-        
-        if cleared_rows:
 
+        if cleared_rows:
             # Changing scoring attributes
             self.__lines_cleared += len(cleared_rows)
             Grid.LEVEL = self.__lines_cleared // 10
 
             # len(cleared_rows) <= 4, but similarly to tetr.io, we're protected if not
             self.score += (len(cleared_rows) // 5) * Grid.__SCORE[4] + Grid.__SCORE[len(cleared_rows) % 5]
-            
+
             # Changing speed; capped at 1 fps
             if Grid.LEVEL <= 17:
                 Grid.SPEED = 35 - 2 * Grid.LEVEL
@@ -418,17 +396,14 @@ class Grid:
             # Sending lines to other grid
             if self.lines_received < -1:
                 Grid.GRIDS[1 - self.__grid_index].lines_received -= self.lines_received # Lines received is negative, remember
-            
-            self.lines_received = 0
 
+            self.lines_received = 0
         elif self.lines_received > 0:
             self.__receiveLines()
             self.lines_received = 0
 
     def __getNextBlock(self):
-        '''Replaces the current block with next block in NEXT_BLOCKS static list. If there are no blocks ahead in queue generates no blocks using the generateBlock method. Increases the block index attribute by 1.
-        '''
-        
+        '''Replaces the current block with next block in NEXT_BLOCKS static list. If there are no blocks ahead in queue generates no blocks using the generateBlock method. Increases the block index attribute by 1.'''
         if self.flag:
             self.drawBlock()
 
@@ -446,30 +421,26 @@ class Grid:
                 self.lose = True
 
         self.__block_index += 1
-    
+
     def __generateBlock():
         '''Based on certain conditions involving previously generated blocks, generates a new block and appends it to the static list BLOCKS'''
-        
         blocks = Grid.BLOCKS.copy()
 
         try:
-            
             # Allowing no 5 same blocks to be queued consecutively
             if len({Grid.NEXT_BLOCKS[i] for i in range(-4, 0)}) == 1:
                 blocks.remove(Grid.NEXT_BLOCKS[-1])
-            
+
             # Forcing at least one I-block within 12 queues of one another
             if [Grid.NEXT_BLOCKS[i] for i in range(-11, 0)].count('i') == 0:
                 blocks = ['i']
-            
         except IndexError:
-
             # Haven't generated enough blocks for these rules to apply yet
             pass
-        
+
         # Appending generated block to queue
         Grid.NEXT_BLOCKS.append(blocks[randint(0, len(blocks) - 1)])
-    
+
     def __str__(self):
         '''str override'''
         return f'Grid: ({self.__grid}), Grid colours: ({self.__gridColours}))'
