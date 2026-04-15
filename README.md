@@ -5,7 +5,7 @@ A simple recreation of competitive two-player Tetris
 ## Installation
 
 ```shell
-git clone https://github.com/Anonymous-Humanoid/Bootleg-Tetris
+git clone https://github.com/Vessel9817/Bootleg-Tetris
 cd Bootleg-Tetris
 py -3.13 -m venv './venv'
 './venv/Scripts/activate'

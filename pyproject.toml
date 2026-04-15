@@ -20,5 +20,5 @@ license-files = ["LICEN[CS]E*", "*.license"]
 dependencies = ["pygame >= 2.6.1"]
 
 [project.urls]
-Homepage = "https://github.com/Anonymous-Humanoid/Bootleg-Tetris"
-Issues = "https://github.com/Anonymous-Humanoid/Bootleg-Tetris/issues"
+Homepage = "https://github.com/Vessel9817/Bootleg-Tetris"
+Issues = "https://github.com/Vessel9817/Bootleg-Tetris/issues"
