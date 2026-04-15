@@ -277,9 +277,12 @@ class Block:
 
         # Performing collision detection with new cell coordinates
         for coords in coordinates:
-            in_bounds =  (0 <= coords[0] < Block.ROWS and 0 <= coords[1] < Block.COLS)
+            in_bounds = (0 <= coords[0] < Block.ROWS and 0 <= coords[1] < Block.COLS)
+            if not in_bounds:
+                return False
+
             non_empty = self.__grid.get_cell(coords[0], coords[1])[1] != Block.BLACK
-            if not in_bounds or non_empty:
+            if non_empty:
                 return False
 
         return True
