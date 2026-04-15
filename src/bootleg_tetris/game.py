@@ -7,14 +7,10 @@ from .block import Block
 from .grid import Grid
 
 
-def startGame(display):
+def startGame(display: pygame.surface.Surface) -> None:
     '''Is responsible for: parsing key inputs and redirecting them to controls within the game; for drawing and refreshing the display and grid; for checking whether a player has lost or not and prompting the respective message for such an event and; for the countdown timers of auto dropping and automatically locking the blocks to their respective grids'''
-
-    frame_counter = 0
-
     grid_1 = Grid(100, 100, 400, display)
     grid_2 = Grid(500, 100, 400, display)
-
     keyPressedActions = {
         # Player 1 controls
         pygame.K_w     : grid_1.block.rotCW,
@@ -36,31 +32,26 @@ def startGame(display):
         pygame.K_k     : grid_2.block.hardDrop,
         pygame.K_l     : grid_2.swapHold
     }
-
-    # Tracking in-game time
     clock = pygame.time.Clock()
 
-    # Printing current event until display is exited
+    # Event loop
     while True:
-        frame_counter += 1
-
+        # Displaying game over
         if grid_1.lose:
             grid_2.win = True
             font = pygame.font.SysFont(None, 30)
             new_game_text = font.render("Press Space To Restart", False, Block.WHITE)
-
             display.blit(new_game_text, (display.get_width() / 2.75, 50))
         elif grid_2.lose:
             grid_1.win = True
             font = pygame.font.SysFont(None, 30)
             new_game_text = font.render("Press Space To Restart", False, Block.WHITE)
-
             display.blit(new_game_text, (display.get_width() / 2.75, 50))
 
+        # Handling game events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 raise SystemExit
-
             elif not (grid_1.win or grid_2.win):
                 # Performing key press incurred operations
                 if event.type == pygame.KEYDOWN:
@@ -69,13 +60,12 @@ def startGame(display):
                     else:
                         # Unknown key pressed
                         pass
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    pygame.draw.rect(display, Block.BLACK, pygame.Rect(display.get_width()/2.75, 50, 600, 50))
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pygame.draw.rect(display, Block.BLACK, pygame.Rect(display.get_width()/2.75, 50, 600, 50))
+                grid_1.resetGrid()
+                grid_2.resetGrid()
 
-                    grid_1.resetGrid()
-                    grid_2.resetGrid()
-
+        # Dropping blocks
         if not (grid_1.win or grid_2.win):
             for g in Grid.GRIDS:
                 g.drop_counter += 1
