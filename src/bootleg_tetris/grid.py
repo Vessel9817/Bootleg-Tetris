@@ -61,6 +61,29 @@ class Grid:
         4 : 1200
     }
 
+    block: Block
+    hold: Block
+    timer_running: bool
+    timer: int
+    drop_counter: int
+    next_block_flag: bool
+    lose: bool
+    win: bool
+    score: int
+    lines_received: int
+    __surface: pygame.surface.Surface
+    __width: int
+    __height: int
+    __cell_length: int
+    __grid_index: int
+    __x: int
+    __y: int
+    __block_index: int
+    __is_held: bool
+    __lines_cleared: int
+    __grid_colours: list[list[tuple[int, int, int]]]
+    __grid: list[list[pygame.Rect]]
+
     def __init__(
         self,
         x: int,
@@ -118,7 +141,7 @@ class Grid:
         self.score = 0
 
         # Resetting grid cell colours
-        self.__grid_colours: list[list[tuple[int, int, int]]] = [
+        self.__grid_colours = [
             [Block.BLACK for _ in range(Grid.COLS)]
             for _ in range(Grid.ROWS)
         ]

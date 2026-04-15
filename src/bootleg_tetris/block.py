@@ -153,6 +153,13 @@ class Block:
         }
     }
 
+    colour: tuple[int, int, int]
+    __block_type: str
+    __grid: 'Grid'
+    __rot_state: int
+    __row_offset: int
+    __col_offset: int
+
     def __init__(self, block_type: str, grid: 'Grid', rot_state: int=0) -> None:
         '''Constructs a Block object whose grid is *grid*, block type is *block_type*, rotation state is *rot_state*, is offset by 3 columns and whose colour is determined by its block type'''
         self.__grid = grid
