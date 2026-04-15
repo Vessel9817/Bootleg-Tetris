@@ -1,25 +1,5 @@
 #!/usr/bin/python3
 
-# Player 1 controls
-# W     : rotate CW
-# A     : move down once
-# S     : left
-# D     : right
-# T     : 180 rotation
-# F     : rotate CCW
-# G     : make block go brr to ground
-# H     : hold block for later
-
-# Player 2 controls
-# NUM 8 : rotate CW
-# NUM 5 : move down once
-# NUM 4 : left
-# NUM 6 : right
-# I     : 180 rotation
-# J     : rotate CCW
-# K     : make block go brr to ground
-# L     : hold block for later
-
 # Hiding pygame support message
 import os
 
