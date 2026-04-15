@@ -37,8 +37,8 @@ class Block:
         - colour : The colour of the block
     '''
 
-    ROWS = 20
-    COLS = 10
+    ROWS    = 20
+    COLS    = 10
     CYAN    = 0,   255, 255
     ORANGE  = 255, 165, 0
     BLUE    = 0,   0,   255
@@ -157,15 +157,15 @@ class Block:
         '''Constructs a Block object whose grid is *grid*, block type is *block_type*, rotation state is *rot_state*, is offset by 3 columns and whose colour is determined by its block type'''
         self.__grid = grid
 
-        self.resetBlock(block_type, rot_state=rot_state)
+        self.reset_block(block_type, rot_state=rot_state)
 
-    def moveDown(self) -> bool:
+    def move_down(self) -> bool:
         '''Moves the block down by 1 row from player command. If the block cannot move, it instantly locks the block in place and returns False. If it can move, it restarts the lock countdown timer and turns it off and returns True'''
-        self.eraseBlock()
+        self.erase_block()
 
         # Checking if block can move down
         if not self.__move(row=-1):
-            self.__grid.instantLock()
+            self.__grid.instant_lock()
             return False
 
         # Resetting auto-lock timers
@@ -174,9 +174,9 @@ class Block:
         self.__grid.timer = 0
         return True
 
-    def autoMoveDown(self) -> bool:
+    def auto_move_down(self) -> bool:
         '''Moves the block down by 1 row. If the block cannot move, it starts the countdown timer and checks if the block can be locked onto the grid and returns false. If it can move, it restarts the lock countdown timer and turns it off and reurns true. This method differs from the moveDown method, as it is used by the driving Tetris class to automatically soft-drop the block'''
-        self.eraseBlock()
+        self.erase_block()
 
         # Starting auto-lock timer if block can't move down
         if not self.__move(row=-1):
@@ -190,30 +190,30 @@ class Block:
         self.__grid.timer = 0
         return True
 
-    def moveLeft(self) -> bool:
+    def move_left(self) -> bool:
         '''Moves the block to the left by 1 column using the move method. Will not do anything if the block cannot move'''
-        self.eraseBlock()
+        self.erase_block()
         return self.__move(col=-1)
 
-    def moveRight(self) -> bool:
+    def move_right(self) -> bool:
         '''Moves the block to the right by 1 column using the move method. Will not do anything if the block cannot move'''
-        self.eraseBlock()
+        self.erase_block()
         return self.__move(col=1)
 
-    def hardDrop(self) -> None:
+    def hard_drop(self) -> None:
         '''Continuously moves the block down with the moveDown method until the block cannot move down anymore and locks the block in place'''
-        while self.moveDown():
+        while self.move_down():
             pass # Logic is already handled
 
-    def rotCW(self) -> bool:
+    def rotate_cw(self) -> bool:
         '''Rotates the block clockwise by 90 degrees if the block can rotate using the rotate method'''
         return self.__rotate(1)
 
-    def rotCCW(self) -> bool:
+    def rotate_ccw(self) -> bool:
         '''Rotates the block counter clockwise by 90 degrees if the block can rotate using the rotate method'''
         return self.__rotate(3)
 
-    def rotFull(self) -> bool:
+    def rotate_180(self) -> bool:
         '''Rotates the block by 180 degrees if the block can rotate using the rotate method'''
         return self.__rotate(2)
 
@@ -224,7 +224,7 @@ class Block:
             - rot_state_change : The quantity by which increment the rotational state in a wraparound format
         '''
         # Erasing block from grid
-        self.eraseBlock()
+        self.erase_block()
 
         # Cycling rotational state
         old_state = self.__rot_state
@@ -236,24 +236,24 @@ class Block:
 
         # Performing collision detections
         for offset in offsets[old_state][self.__rot_state]:
-            if self.collisionDetect(r_off=offset[1], c_off=offset[0]):
+            if self.detect_collision(r_off=offset[1], c_off=offset[0]):
                 # Rotation successful; shifting block
                 self.__move(row=offset[1], col=offset[0])
 
-                self.__grid.drawBlock()
+                self.__grid.draw_block()
 
                 return True
 
         # Rotation unsuccessful; resetting block rotation
         self.__rot_state = old_state
 
-        self.__grid.drawBlock()
+        self.__grid.draw_block()
 
         return False
 
     def __move(self, row: int=0, col: int=0) -> bool:
         ''' If the block is not colliding with another block or the grid's edges, it decreases the row offset by *row* and column offset by *col* to move the block and returns True. If the block is colliding with another or the edges, it returns False'''
-        if not self.collisionDetect(r_off=row, c_off=col):
+        if not self.detect_collision(r_off=row, c_off=col):
             return False
 
         # Offsetting block position
@@ -262,14 +262,14 @@ class Block:
         self.__col_offset += col
         return True
 
-    def collisionDetect(self, r_off: int=0, c_off: int=0) -> bool:
+    def detect_collision(self, r_off: int=0, c_off: int=0) -> bool:
         '''Temporarily offsets the block by the *r_off* and *c_off* to get the coordinates at that position and checks if the coordinates of that possition are within the grid and if they overlap with existing blocks. If they overlap or are not in the grid, it returns False, otherwise it returns True'''
         # Temporarily offsetting block
         self.__row_offset -= r_off
         self.__col_offset += c_off
 
         # Getting new offset cell coordinates
-        coordinates = self.getCoords()
+        coordinates = self.get_coords()
 
         # Resetting block offset
         self.__row_offset += r_off
@@ -278,13 +278,13 @@ class Block:
         # Performing collision detection with new cell coordinates
         for coords in coordinates:
             in_bounds =  (0 <= coords[0] < Block.ROWS and 0 <= coords[1] < Block.COLS)
-            non_empty = self.__grid.getCell(coords[0], coords[1])[1] != Block.BLACK
+            non_empty = self.__grid.get_cell(coords[0], coords[1])[1] != Block.BLACK
             if not in_bounds or non_empty:
                 return False
 
         return True
 
-    def getBlockType(self) -> str:
+    def get_block_type(self) -> str:
         '''Returns the block type
 
         Returns:
@@ -292,19 +292,19 @@ class Block:
         '''
         return self.__block_type
 
-    def eraseBlock(self) -> None:
+    def erase_block(self) -> None:
         '''Removes the block from the grid by changing all the cells back to black'''
-        for coords in self.getCoords():
-            self.__grid.setCell(coords[0], coords[1], Block.BLACK)
+        for coords in self.get_coords():
+            self.__grid.set_cell(coords[0], coords[1], Block.BLACK)
 
-    def getCoords(self) -> list[list[int]]:
+    def get_coords(self) -> list[list[int]]:
         '''Returns the current coordinates of the block'''
         return [
             [base_coords[0] + self.__row_offset, base_coords[1] + self.__col_offset]
             for base_coords in Block.__SHAPES[self.__block_type][self.__rot_state]
         ]
 
-    def resetBlock(self, block_type: str, rot_state: int=0) -> None:
+    def reset_block(self, block_type: str, rot_state: int=0) -> None:
         '''Resets the block by changing block type to *block_type*, rotation state to *rot_state* and other attributes to their base values'''
         self.__block_type = block_type.lower()
         self.__rot_state = rot_state

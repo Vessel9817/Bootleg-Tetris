@@ -27,7 +27,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 
 import pygame
 
-from .game import startGame
+from .game import start_game
 
 if __name__ == '__main__':
     '''Runs the game of Tetris as well as initializing Pygame and the game display'''
@@ -41,4 +41,4 @@ if __name__ == '__main__':
     pygame.display.set_caption('Tetris')
 
     # Running the game
-    startGame(display)
+    start_game(display)
