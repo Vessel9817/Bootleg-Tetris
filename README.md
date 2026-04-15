@@ -1,6 +1,6 @@
 # Bootleg-Tetris
 
-[![CI](https://github.com/Anonymous-Humanoid/Bootleg-Tetris/actions/workflows/ci.yml/badge.svg)](https://github.com/Anonymous-Humanoid/Bootleg-Tetris/actions/workflows/ci.yml)
+[![CI](https://github.com/Vessel9817/Bootleg-Tetris/actions/workflows/ci.yml/badge.svg)](https://github.com/Vessel9817/Bootleg-Tetris/actions/workflows/ci.yml)
 
 A simple recreation of competitive two-player Tetris
 
