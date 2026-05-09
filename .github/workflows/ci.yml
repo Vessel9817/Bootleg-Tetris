@@ -7,9 +7,10 @@ jobs:
   build:
     permissions:
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: ['ubuntu-latest', 'windows-latest']
         python-version: ['3.13']
     steps:
       - name: Checkout
